@@ -7,7 +7,8 @@ import {
     Dimensions,
     AlertIOS,
     Platform,
-    NativeModules
+    NativeModules,
+    Image
 } from 'react-native';
 import Expo from 'expo';
 
@@ -27,7 +28,6 @@ export default class App extends React.Component {
         validated: false
     };
     componentDidMount() {
-
         let authFunction;
 
         if (Platform.OS === 'android') {
@@ -53,22 +53,44 @@ export default class App extends React.Component {
                     this.setState({
                         validated: true
                     })
-
                 } else {
+                    AlertIOS.alert('Could not validate fingerprint');
                 }
             };
         }
-
         authFunction();
     }
+    renderIf(condition, content) {
+        if (condition) {
+            return content;
+        } else {
+            return null;
+        }
+    }
+    showCheck() {
+        console.log('showing check');
+        <svg className="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+        <circle className="checkmark__circle" cx={26} cy={26} r={25} fill="none"/>
+        <path className="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+        </svg>
+    }
     render() {
-
+        this.state.validated ? this.showCheck() : console.log("weiners")
         return (
             <View style={[
                 {flex: 1},
                 styles.center,
-                {backgroundColor: this.state.validated ? '#66ff66' : '#ff4d4d'}
+                {backgroundColor: this.state.validated ? 'white' : '#ff4d4d'}
             ]}>
+            {this.renderIf(this.state.validated,
+                <View style={styles.center}>
+                <Text>This should be above the image</Text>
+                <Image
+                    style={{width: 250, height: 250}}
+                    source={{uri: 'https://media.giphy.com/media/8GY3UiUjwKwhO/giphy.gif'}}
+                />
+                </View>
+            )}
             </View>
         )
     }
@@ -81,6 +103,10 @@ export default class App extends React.Component {
 //     </Button>
 
 const styles = StyleSheet.create({
+    image: {
+        height: 500,
+        width: 500
+    },
     center: {
         justifyContent: 'center',
         alignItems: 'center'
