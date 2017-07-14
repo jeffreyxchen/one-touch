@@ -13,7 +13,7 @@
     "type": "git",
     "url": "git+https://github.com/PrateekAgarwal20/one-touch.git"
   },
-  "author": "Prateek Agarwal, Adam Ripley, Jeffrey Chen, Brian Fakhoury",
+  "author": "Jeffrey Chen, Prateek Agarwal, Brian Fakhoury, Adam Ripley",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/PrateekAgarwal20/one-touch/issues"
@@ -27,7 +27,11 @@
     "nodemon": "^1.11.0",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
+    "react-native": "^0.46.2",
+    "react-native-touch-id": "^3.1.0",
+    "react-navigation": "^1.0.0-beta.11",
     "react-redux": "^5.0.5",
+    "redux": "^3.7.2",
     "webpack": "^2.7.0"
   },
   "devDependencies": {
