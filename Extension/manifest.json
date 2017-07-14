@@ -1,0 +1,29 @@
+{
+  "manifest_version": 2,
+
+  "name": "One Touch",
+  "description": "One password by your fingerprint",
+  "version": "1.0",
+
+  "browser_action": {
+    "default_icon": "icon.png"
+  },
+  "permissions": [
+    "tabs",
+    "storage",
+    "https://ajax.googleapis.com/"
+  ],
+  "background": {
+    "scripts": [
+      "socket.io.js",
+      "background.js"
+    ]
+  },
+  "content_scripts": [
+    {
+      "matches": ["http://*/*", "https://*/*"],
+      "js": ["jquery.min.js", "checker.js"]
+    }
+  ],
+  "content_security_policy": "default-src 'none'; script-src 'self'; object-src 'self'"
+}
