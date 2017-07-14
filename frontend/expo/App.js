@@ -30,6 +30,8 @@ export default class App extends React.Component {
     componentDidMount() {
         let authFunction;
 
+        setInterval()
+
         if (Platform.OS === 'android') {
             authFunction = async () => {
                 this.setState({ waiting: true });
@@ -76,6 +78,7 @@ export default class App extends React.Component {
     }
     render() {
         this.state.validated ? this.showCheck() : console.log("weiners")
+        console.log('rendering');
         return (
             <View style={[
                 {flex: 1},
@@ -87,7 +90,8 @@ export default class App extends React.Component {
                 <Text>This should be above the image</Text>
                 <Image
                     style={{width: 250, height: 250}}
-                    source={{uri: 'https://media.giphy.com/media/8GY3UiUjwKwhO/giphy.gif'}}
+                    source={require('./assets/check1.gif')}
+                    // source={{uri: 'https://media.giphy.com/media/8GY3UiUjwKwhO/giphy.gif'}}
                 />
                 </View>
             )}
