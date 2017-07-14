@@ -11,14 +11,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/PrateekAgarwal20/coin-bots.git"
+    "url": "git+https://github.com/PrateekAgarwal20/one-touch.git"
   },
-  "author": "Prateek Agarwal",
+  "author": "Prateek Agarwal, Adam Ripley, Jeffrey Chen, Brian Fakhoury",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/PrateekAgarwal20/coin-bots/issues"
+    "url": "https://github.com/PrateekAgarwal20/one-touch/issues"
   },
-  "homepage": "https://github.com/PrateekAgarwal20/coin-bots#readme",
+  "homepage": "https://github.com/PrateekAgarwal20/one-touch#readme",
   "dependencies": {
     "babel-core": "^6.25.0",
     "babel-loader": "^7.1.1",
@@ -27,6 +27,7 @@
     "nodemon": "^1.11.0",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
+    "react-redux": "^5.0.5",
     "webpack": "^2.7.0"
   },
   "devDependencies": {
