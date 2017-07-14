@@ -11,29 +11,6 @@ import {
 } from 'react-native';
 import Expo from 'expo';
 
-// export default class App extends React.Component {
-//     showTouch() {
-//         console.log("WANG");
-//         if(Expo.Fingerprint.hasHardwareAsync() === true) {
-//             console.log('supported');
-//         } else {
-//             console.log('dick');
-//         }
-//     }
-//     render() {
-//         return (
-//             <View style={styles.container}>
-//             <Text>Open up App.js to start working on your app!</Text>
-//             <TouchableOpacity
-//             style={[styles.button, styles.buttonBlue, styles.center]}
-//             onPress={() => this.showTouch()}
-//             >
-//             <Text>This is a button</Text>
-//             </TouchableOpacity>
-//             </View>
-//         );
-//     }
-// }
 function Button(props) {
     return (
         <TouchableOpacity
