@@ -28,7 +28,7 @@ function oneTouch() {
   return "called one touch";
 }
 
-login(msg) {
+function login(msg) {
   var parentForm = $(':password').closest('form');
   $(':password').val(msg.password);
   $(':password').siblings('input').val(msg.username)[0];
