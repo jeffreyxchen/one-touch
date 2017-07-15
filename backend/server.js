@@ -18,39 +18,39 @@ io.on('connection', function(socket){
   // emit login_request with token and website object
   // they check for fingerprint and send back
 
-//   socket.on('login_request_t1', function(req){
-//     console.log(req);
-//     User.findById(req.token, function(err, user){
-//       if(err){
-//         // The user doesn't exist, register them!
-//         registerUser(socket);
-//       } else {
-//         var token = user._id;
-//         var t1 = socket.id;
-//         var t2 = socketMap.token.t1;
-//         user.websites.forEach(function(websiteObj){
-//           if(websiteObj.website === req.website){
-//
-//           } else {
-//             socket.emit('new_website', {website: req.website})
-//           }
-//         })
-//       }
-//     })
-//     // go to database, check if token id exists
-//     //          check if website login/password exists
-//     //              if token id does not exist, prompt registration socket.emit back to background.js
-//     //              if website login/password does not exist, prompt enter login/password for this website (later integrate google/fb oauth)
-//     // emit 'login_request' to partner socket based of socketMap (req has the token)
-//     // set authorizing to true, store setTimeout for 30 seconds. Set authorizing to false at end of timeout (in callback)
-//   })
+  socket.on('login_request_t1', function(req){
+    console.log(req);
+    User.findById(req.token, function(err, user){
+      if(!user){
+        // The user doesn't exist, register them!
+        registerUser(socket);
+      } else {
+        var token = user._id;
+        var t1 = socket.id;
+        var t2 = socketMap.token.t1;
+        user.websites.forEach(function(websiteObj){
+          if(websiteObj.website === req.website){
+
+          } else {
+            socket.emit('new_website', {website: req.website})
+          }
+        })
+      }
+    })
+    // go to database, check if token id exists
+    //          check if website login/password exists
+    //              if token id does not exist, prompt registration socket.emit back to background.js
+    //              if website login/password does not exist, prompt enter login/password for this website (later integrate google/fb oauth)
+    // emit 'login_request' to partner socket based of socketMap (req has the token)
+    // set authorizing to true, store setTimeout for 30 seconds. Set authorizing to false at end of timeout (in callback)
+  })
 //
 //   socket.on('request_approved_t2', function(req){
 //     // if authorizing is false, emit a request_denied_t2 event to t2
 //     // emit 'login' to t1 socket with login and password data retrieved from mongo
 //   })
 // });
-//
+
   function registerUser(socket){
     var usr = new User();
     usr.save(function(err, user){
@@ -60,6 +60,7 @@ io.on('connection', function(socket){
         // TODO: update socketMap
         // TODO: still need to find t2 and time
         socketMap[user._id] = {t1: socket.id, authorizing: false};
+        console.log('emitting registration with', user._id);
         socket.emit('registration', user._id);
       }
     })
