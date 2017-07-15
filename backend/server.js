@@ -70,7 +70,7 @@ io.on('connection', function(socket){
 
   socket.on('create_new_website', function(socket){
     //TODO
-    
+
   })
 })
 

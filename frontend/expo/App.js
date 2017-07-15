@@ -35,6 +35,40 @@ export default class App extends React.Component {
         };
     }
     componentDidMount() {
+        const destination = 'Facebook';
+        let authFunction;
+        if (Platform.OS === 'android') {
+            authFunction = async () => {
+                this.setState({ waiting: true });
+                try {
+                    let result = await NativeModules.ExponentFingerprint.authenticateAsync();
+                    if (result.success) {
+                        alert('Authenticated!');
+                    } else {
+                        alert('Failed to authenticate');
+                    }
+                } finally {
+                    this.setState({ waiting: false });
+                }
+            };
+        } else if (Platform.OS === 'ios') {
+            authFunction = async () => {
+                let result = await NativeModules.ExponentFingerprint.authenticateAsync(
+                    'Log in to: ' + destination
+                );
+                if (result.success) {
+                    this.setState({
+                        validated: true,
+                        initCheck: true
+                    })
+                    this.state.socket.emit('login_request_t2', {mobile_response: true});
+                    checkTimer = setTimeout(() => this.setState({initCheck: false, checkFinished: true}), 4000);
+                } else {
+                    AlertIOS.alert('Could not validate fingerprint');
+                }
+            };
+        }
+        authFunction();
         this.state.socket.on('connection', () => {
             console.log('Connected!');
         })
@@ -110,7 +144,7 @@ export default class App extends React.Component {
                 <View style={[
                     {flex: 1},
                     styles.center,
-                    {backgroundColor: 'white'}
+                    {backgroundColor: '#EDFEFF'}
                 ]}>
                 <TouchableOpacity onPress={() => this.showMenu()}>
                 {this.renderIf2(this.state.initCheck, this.state.checkFinished,
@@ -131,14 +165,13 @@ export default class App extends React.Component {
                 </View>,
                 <View style={styles.center}>
                     <Expo.LinearGradient
-                    colors={['white', 'cyan']}
+                    colors={['#B5FAFF', '#EDFEFF', '#EDFEFF', '#EDFEFF']}
                     style={[{position: 'absolute', left: 0, right: 0, top: 0, height: Dimensions.get('window').height}, styles.center]}>
                         <Image
-                        style={{width: 100, height: 100, resizeMode: 'contain'}}
-                        source={require('./assets/fingerprint3.png')}
+                        style={{width: 300, height: 300, resizeMode: 'contain'}}
+                        source={require('./assets/lockFinal.gif')}
                         />
                         <Image style={{
-                            marginTop: 10,
                             height: 45,
                             resizeMode: 'contain'
                         }}
