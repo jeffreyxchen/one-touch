@@ -26,6 +26,7 @@ const io = require('socket.io-client');
 
 export default class App extends React.Component {
     constructor(props) {
+        console.log('constructor');
         super(props);
         this.state = {
             waiting: false,
@@ -36,41 +37,42 @@ export default class App extends React.Component {
         };
     }
     componentDidMount() {
-        // const destination = 'Facebook';
-        // let authFunction;
-        // if (Platform.OS === 'android') {
-        //     authFunction = async () => {
-        //         this.setState({ waiting: true });
-        //         try {
-        //             let result = await NativeModules.ExponentFingerprint.authenticateAsync();
-        //             if (result.success) {
-        //                 alert('Authenticated!');
-        //             } else {
-        //                 alert('Failed to authenticate');
-        //             }
-        //         } finally {
-        //             this.setState({ waiting: false });
-        //         }
-        //     };
-        // } else if (Platform.OS === 'ios') {
-        //     authFunction = async () => {
-        //         let result = await NativeModules.ExponentFingerprint.authenticateAsync(
-        //             'Log in to: ' + destination
-        //         );
-        //         if (result.success) {
-        //             this.setState({
-        //                 validated: true,
-        //                 initCheck: true
-        //             })
-        //             this.state.socket.emit('login_request_t2', {mobile_response: true});
-        //             checkTimer = setTimeout(() => this.setState({initCheck: false, checkFinished: true}), 4000);
-        //         } else {
-        //             AlertIOS.alert('Could not validate fingerprint');
-        //         }
-        //     };
-        // }
-        // authFunction();
-        this.state.socket.on('connection', () => {
+        console.log('mount');
+        const destination = 'Facebook';
+        let authFunction;
+        if (Platform.OS === 'android') {
+            authFunction = async () => {
+                this.setState({ waiting: true });
+                try {
+                    let result = await NativeModules.ExponentFingerprint.authenticateAsync();
+                    if (result.success) {
+                        alert('Authenticated!');
+                    } else {
+                        alert('Failed to authenticate');
+                    }
+                } finally {
+                    this.setState({ waiting: false });
+                }
+            };
+        } else if (Platform.OS === 'ios') {
+            authFunction = async () => {
+                let result = await NativeModules.ExponentFingerprint.authenticateAsync(
+                    'Log in to: ' + destination
+                );
+                if (result.success) {
+                    this.setState({
+                        validated: true,
+                        initCheck: true
+                    })
+                    this.state.socket.emit('login_request_t2', {mobile_response: true});
+                    checkTimer = setTimeout(() => this.setState({initCheck: false, checkFinished: true}), 4000);
+                } else {
+                    AlertIOS.alert('Could not validate fingerprint');
+                }
+            };
+        }
+        authFunction();
+        this.state.socket.on('connect', () => {
             console.log('Connected!');
         })
         this.state.socket.on('errorMessage', (message) => {
@@ -104,7 +106,7 @@ export default class App extends React.Component {
                             validated: true,
                             initCheck: true
                         })
-                        this.state.socket.emit('login_request_t2', {mobile_response: true, websiteObj: data});
+                        this.state.socket.emit('login_request_t2', Object.assign({mobile_response: true}, data});
                         checkTimer = setTimeout(() => this.setState({initCheck: false, checkFinished: true}), 4000);
                     } else {
                         // this.state.socket.emit('login_request_t2', {mobile_response: false});
@@ -113,7 +115,7 @@ export default class App extends React.Component {
                             validated: true,
                             initCheck: true
                         })
-                        this.state.socket.emit('login_request_t2', {mobile_response: true, websiteObj: data});
+                        this.state.socket.emit('login_request_t2', Object.assign({mobile_response: true}, data});
                         checkTimer = setTimeout(() => this.setState({initCheck: false, checkFinished: true}), 4000);
                     }
                 };
@@ -158,13 +160,13 @@ export default class App extends React.Component {
                 {this.renderIf2(this.state.initCheck, this.state.checkFinished,
                     <View style={styles.center}>
                     <Image
-                    style={{width: 400, height: 400}}
+                    style={{width: 250, height: 250}}
                     source={require('./assets/checkFinal.gif')}
                     />
                     </View>,
                     <View style={styles.center}>
                     <Image
-                    style={{width: 400, height: 400}}
+                    style={{width: 250, height: 250}}
                     source={require('./assets/checkStatic.jpg')}
                     />
                     </View>
