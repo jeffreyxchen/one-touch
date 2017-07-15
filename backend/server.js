@@ -24,9 +24,9 @@ io.on('connection', function(socket){
     // find user
     var t1 = socket.id;
     var token = null;
-    Object.values(socketMap).forEach(function (obj, idx){
-      if(obj.t1 === t1){
-        token = Object.keys(socketMap)[idx];
+    Object.keys(socketMap).forEach(function(key){
+      if(socketMap[key][t1] === t1){
+        token = key;
       }
     })
 
@@ -79,7 +79,7 @@ io.on('connection', function(socket){
 
   socket.on('create_new_website', function(socket){
     //TODO
-    
+
 
   })
 });
