@@ -10,9 +10,7 @@ import {
     NativeModules,
     Image
 } from 'react-native';
-import { StackNavigator } from 'react-navigation';
 
-import Expo from 'expo';
 const io = require('socket.io-client');
 
 // function Button(props) {
@@ -26,9 +24,6 @@ const io = require('socket.io-client');
 // }
 
 export default class App extends React.Component {
-    static navigationOptions = {
-        title: 'Login'
-    };
     constructor(props) {
         super(props);
         this.state = {
@@ -46,45 +41,43 @@ export default class App extends React.Component {
         this.state.socket.on('errorMessage', (message) => {
             console.log(message);
         })
-        this.state.socket.on('login_request', () => {
+        this.state.socket.on('login_request_mobile', () => {
             console.log('Login request received');
-        })
-
-        const destination = 'Facebook';
-
-        let authFunction;
-        if (Platform.OS === 'android') {
-            authFunction = async () => {
-                this.setState({ waiting: true });
-                try {
-                    let result = await NativeModules.ExponentFingerprint.authenticateAsync();
-                    if (result.success) {
-                        alert('Authenticated!');
-                    } else {
-                        alert('Failed to authenticate');
+            const destination = 'Facebook';
+            let authFunction;
+            if (Platform.OS === 'android') {
+                authFunction = async () => {
+                    this.setState({ waiting: true });
+                    try {
+                        let result = await NativeModules.ExponentFingerprint.authenticateAsync();
+                        if (result.success) {
+                            alert('Authenticated!');
+                        } else {
+                            alert('Failed to authenticate');
+                        }
+                    } finally {
+                        this.setState({ waiting: false });
                     }
-                } finally {
-                    this.setState({ waiting: false });
-                }
-            };
-        } else if (Platform.OS === 'ios') {
-            authFunction = async () => {
-                let result = await NativeModules.ExponentFingerprint.authenticateAsync(
-                    'Log in to: ' + destination
-                );
-                if (result.success) {
-                    this.setState({
-                        validated: true,
-                        initCheck: true
-                    })
-                    this.state.socket.emit('login_status', true);
-                    checkTimer = setTimeout(() => this.setState({initCheck: false, checkFinished: true}), 4000);
-                } else {
-                    AlertIOS.alert('Could not validate fingerprint');
-                }
-            };
-        }
-        authFunction();
+                };
+            } else if (Platform.OS === 'ios') {
+                authFunction = async () => {
+                    let result = await NativeModules.ExponentFingerprint.authenticateAsync(
+                        'Log in to: ' + destination
+                    );
+                    if (result.success) {
+                        this.setState({
+                            validated: true,
+                            initCheck: true
+                        })
+                        this.state.socket.emit('login_request_t2', true);
+                        checkTimer = setTimeout(() => this.setState({initCheck: false, checkFinished: true}), 4000);
+                    } else {
+                        AlertIOS.alert('Could not validate fingerprint');
+                    }
+                };
+            }
+            authFunction();
+        })
     }
     renderIf1(condition, content1, content2) {
         if (condition) {
@@ -123,36 +116,35 @@ export default class App extends React.Component {
                 {this.renderIf2(this.state.initCheck, this.state.checkFinished,
                     <View style={styles.center}>
                     <Image
-                    style={{width: 250, height: 250}}
+                    style={{width: 400, height: 400}}
                     source={require('./assets/checkFinal.gif')}
                     />
                     </View>,
                     <View style={styles.center}>
                     <Image
-                    style={{width: 250, height: 250}}
+                    style={{width: 400, height: 400}}
                     source={require('./assets/checkStatic.jpg')}
                     />
                     </View>
                 )}
                 </TouchableOpacity>
                 </View>,
-
-                <View style={[
-                    {flex: 1},
-                    styles.center,
-                    {backgroundColor: 'white'}
-                ]}>
-                <Image
-                style={{width: 100, height: 100}}
-                source={require('./assets/fingerprint.png')}
-                />
-                <Image style={{
-                    marginTop: 10,
-                    height: 45,
-                    resizeMode: 'contain'
-                }}
-                source={require('./assets/logo.png')}
-                />
+                <View style={styles.center}>
+                    <Expo.LinearGradient
+                    colors={['white', 'cyan']}
+                    style={[{position: 'absolute', left: 0, right: 0, top: 0, height: Dimensions.get('window').height}, styles.center]}>
+                        <Image
+                        style={{width: 100, height: 100, resizeMode: 'contain'}}
+                        source={require('./assets/fingerprint3.png')}
+                        />
+                        <Image style={{
+                            marginTop: 10,
+                            height: 45,
+                            resizeMode: 'contain'
+                        }}
+                        source={require('./assets/logo.png')}
+                        />
+                    </Expo.LinearGradient>
                 </View>
             )
         )
