@@ -16,6 +16,9 @@ io.on('connection', function(socket){
     registerUser(socket);
   })
 
+  // Mobile Test
+  socket.emit('login_request_mobile');
+  
   // the user sends in a login request from the web, including a
   // token and a website.
   // then, we validate and
