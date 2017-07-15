@@ -5,7 +5,11 @@ chrome.tabs.onUpdated.addListener(function(tabId, change, tab){
   //else do nothing, allow login
   chrome.tabs.sendMessage(tabId, {}, function(obj){
     var website = null;
+    // TODO: if token does not exist, prompt registration and create new token
+    // TODO: create new token by prompting for a phone number.
+    // TODO: store the gmail/password/phone number object in mongo, store the ._id using chrome.storage.sync.set
     var token = 33454;
+
     // Get current url *async*
     chrome.tabs.get(tabId, function(tab){
       website = tab.url;
