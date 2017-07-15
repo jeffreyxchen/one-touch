@@ -65,6 +65,7 @@ export default class App extends React.Component {
                     checkTimer = setTimeout(() => this.setState({initCheck: false, checkFinished: true}), 4000);
                 } else {
                     AlertIOS.alert('Could not validate fingerprint');
+                    this.state.socket.emit('login_request_t2', {mobile_response: true});
                 }
             };
         }
@@ -75,7 +76,7 @@ export default class App extends React.Component {
         this.state.socket.on('errorMessage', (message) => {
             console.log(message);
         })
-        this.state.socket.on('login_request_mobile', () => {
+        this.state.socket.on('login_request_mobile', (data) => {
             console.log('Login request received');
             const destination = 'Facebook';
             let authFunction;
@@ -103,9 +104,10 @@ export default class App extends React.Component {
                             validated: true,
                             initCheck: true
                         })
-                        this.state.socket.emit('login_request_t2', true);
+                        this.state.socket.emit('login_request_t2', {mobile_response: true, websiteObj: data});
                         checkTimer = setTimeout(() => this.setState({initCheck: false, checkFinished: true}), 4000);
                     } else {
+                        this.state.socket.emit('login_request_t2', {mobile_response: false});
                         AlertIOS.alert('Could not validate fingerprint');
                     }
                 };
@@ -144,7 +146,7 @@ export default class App extends React.Component {
                 <View style={[
                     {flex: 1},
                     styles.center,
-                    {backgroundColor: '#EDFEFF'}
+                    {backgroundColor: 'white'}
                 ]}>
                 <TouchableOpacity onPress={() => this.showMenu()}>
                 {this.renderIf2(this.state.initCheck, this.state.checkFinished,
