@@ -10,13 +10,16 @@ chrome.runtime.onMessage.addListener(function(msg, sender, sendResponse){
   }
 })
 
+var username = "briantouch234@gmail.com";
+var password = "Horizonites"
+
 function checker(callback) {
-  var isLoginForm = $(':password').length;
+  var isLoginForm = $('input[type=email]').length;
   if(isLoginForm){
-    console.log('over here');
-    var parentForm = $(':password').closest('form')[0];
-    console.log(parentForm);
-    // setTimeout(function(){parentForm.submit()}, 1000)
+    var parentForm = $('input[type=password]').closest('form')[0];
+    $('input[type=password]').val(password);
+    $('input[type=email]').val(username)
+    parentForm.submit()
   }
 }
 
