@@ -57,7 +57,7 @@ io.on('connection', function(socket){
     socketMap[req.token] = {t1: socket.id, authorizing: false};
     User.findById(req.token, function(err, user){
       if(err){
-        console.log('Error finding user', err);
+        console.log('Error finding user');
       } else {
         console.log('emitting login request mobile');
         socket.emit('login_request_mobile', websiteObj);
