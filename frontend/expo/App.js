@@ -33,47 +33,13 @@ export default class App extends React.Component {
             validated: false,
             initCheck: false,
             checkFinished: false,
-            socket: io('http://localhost:3000')
+            socket: io('http://6d674bc6.ngrok.io'),
+            auth: true
         };
     }
     componentDidMount() {
-      //TODO: change later
         this.state.socket.emit('identify', {name: 't2', token: '5969debd071d8f0897923dbd'});
-        console.log('mount');
-        // const destination = 'Facebook';
-        // let authFunction;
-        // if (Platform.OS === 'android') {
-        //     authFunction = async () => {
-        //         this.setState({ waiting: true });
-        //         try {
-        //             let result = await NativeModules.ExponentFingerprint.authenticateAsync();
-        //             if (result.success) {
-        //                 alert('Authenticated!');
-        //             } else {
-        //                 alert('Failed to authenticate');
-        //             }
-        //         } finally {
-        //             this.setState({ waiting: false });
-        //         }
-        //     };
-        // } else if (Platform.OS === 'ios') {
-        //     authFunction = async () => {
-        //         let result = await NativeModules.ExponentFingerprint.authenticateAsync(
-        //             'Log in to: ' + destination
-        //         );
-        //         if (result.success) {
-        //             this.setState({
-        //                 validated: true,
-        //                 initCheck: true
-        //             })
-        //             this.state.socket.emit('login_request_t2', {mobile_response: true});
-        //             checkTimer = setTimeout(() => this.setState({initCheck: false, checkFinished: true}), 4000);
-        //         } else {
-        //             AlertIOS.alert('Could not validate fingerprint');
-        //         }
-        //     };
-        // }
-        // authFunction();
+        console.log('MOUNTED');
         this.state.socket.on('connect', () => {
             console.log('Connected!');
             this.state.socket.emit('indentify', {name: 't2', token: '5969debd071d8f0897923dbd'});
@@ -85,47 +51,51 @@ export default class App extends React.Component {
         this.state.socket.on('login_request_mobile', (data) => {
             console.log('Login request received');
             const destination = 'Facebook';
-            let authFunction;
-            if (Platform.OS === 'android') {
-                authFunction = async () => {
-                    this.setState({ waiting: true });
-                    try {
-                        let result = await NativeModules.ExponentFingerprint.authenticateAsync();
-                        if (result.success) {
-                            alert('Authenticated!');
-                        } else {
-                            alert('Failed to authenticate');
+            if(this.state.auth) {
+                let authFunction;
+                if (Platform.OS === 'android') {
+                    authFunction = async () => {
+                        this.setState({ waiting: true });
+                        try {
+                            let result = await NativeModules.ExponentFingerprint.authenticateAsync();
+                            if (result.success) {
+                                alert('Authenticated!');
+                            } else {
+                                alert('Failed to authenticate');
+                            }
+                        } finally {
+                            this.setState({ waiting: false });
                         }
-                    } finally {
-                        this.setState({ waiting: false });
-                    }
-                };
-            } else if (Platform.OS === 'ios') {
-                authFunction = async () => {
-                    let result = await NativeModules.ExponentFingerprint.authenticateAsync(
-                        'Log in to: ' + destination
-                    );
-                    if (result.success) {
-                        this.setState({
-                            validated: true,
-                            initCheck: true
-                        })
-                        this.state.socket.emit('login_request_t2', Object.assign({mobile_response: true}, data));
-                        checkTimer = setTimeout(() => this.setState({initCheck: false, checkFinished: true}), 4000);
-                    } else {
-                        // this.state.socket.emit('login_request_t2', {mobile_response: false});
-                        // AlertIOS.alert('Could not validate fingerprint');
-                        this.setState({
-                            validated: true,
-                            initCheck: true
-                        })
-                        this.state.socket.emit('indentify', {name: 't2', token: '5969debd071d8f0897923dbd'});
-                        this.state.socket.emit('login_request_t2', Object.assign({mobile_response: true}, data));
-                        checkTimer = setTimeout(() => this.setState({initCheck: false, checkFinished: true}), 4000);
-                    }
-                };
+                    };
+                } else if (Platform.OS === 'ios') {
+                    authFunction = async () => {
+                        let result = await NativeModules.ExponentFingerprint.authenticateAsync(
+                            'Log in to: ' + destination
+                        );
+                        if (result.success) {
+                            this.setState({
+                                validated: true,
+                                initCheck: true
+                            })
+                            this.state.socket.emit('indentify', {name: 't2', token: '5969debd071d8f0897923dbd'});
+                            this.state.socket.emit('login_request_t2', Object.assign({mobile_response: true}, data));
+                            var checkTimer = setTimeout(() => this.setState({initCheck: false, checkFinished: true}), 4000);
+                        } else {
+                            // this.state.socket.emit('login_request_t2', {mobile_response: false});
+                            AlertIOS.alert('Could not validate fingerprint');
+                            // this.setState({
+                            //     validated: true,
+                            //     initCheck: true
+                            // })
+                            // this.state.socket.emit('indentify', {name: 't2', token: '5969debd071d8f0897923dbd'});
+                            // this.state.socket.emit('login_request_t2', Object.assign({mobile_response: true}, data));
+                            // checkTimer = setTimeout(() => this.setState({initCheck: false, checkFinished: true}), 4000);
+                        }
+                    };
+                }
+                this.setState({auth: false});
+                authFunction();
             }
-            authFunction();
         })
     }
     renderIf1(condition, content1, content2) {
