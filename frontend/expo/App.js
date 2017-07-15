@@ -31,7 +31,7 @@ export default class App extends React.Component {
             validated: false,
             initCheck: false,
             checkFinished: false,
-            socket: io('10.2.109.94', 3000)
+            socket: io('http://localhost:3000')
         };
     }
     componentDidMount() {
