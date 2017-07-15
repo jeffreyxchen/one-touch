@@ -19,7 +19,8 @@ io.on('connection', function(socket){
   socket.on('check_new_website', (urlObj) => {
     console.log('inside socket on checknew');
     var url = urlObj.url;
-    url = url.slice(0, url.indexOf('.com')+4);
+    url = url.slice(0, url.indexOf('.com')+5);
+    console.log('url', url);
 
     // find user
     var t1 = socket.id;
@@ -53,14 +54,22 @@ io.on('connection', function(socket){
   // token and a website.
   // then, we validate and
   socket.on('login_request_t1', function(req){
-    console.log('inside loginreqt1');
-    socketMap[req.token] = {t1: socket.id, authorizing: false};
-    User.findById(req.token, function(err, user){
-      if(err){
+    console.log('inside loginreqt1', 'req.website', req.website);
+    socketMap[req.token.token] = {t1: socket.id, authorizing: false};
+    User.findById(req.token.token, function(err, user){
+      if(!user){
         console.log('Error finding user');
       } else {
-        console.log('emitting login request mobile');
-        socket.emit('login_request_mobile', websiteObj);
+        user.websites.forEach(function(websiteObj){
+          // console.log('websiteObj website', websiteObj.website, 'req.website', req.website);
+          if(websiteObj.website === req.website){
+            console.log('/// emitting mobile request');
+            socket.emit('login_request_mobile', websiteObj);
+          } else {
+            console.log('website obj not found');
+          }
+        })
+
       }
     })
   })
@@ -68,6 +77,7 @@ io.on('connection', function(socket){
   socket.on('login_request_t2', function(response){
     // if authorizing is false, emit a request_denied_t2 event to t2
     // emit 'login' to t1 socket with login and password data retrieved from mongo
+    console.log('got to login requiest t2 in server somehow');
     if(response.mobile_response){
       console.log('emitting login approved t2');
       socket.emit('login_approved_t2', response.websiteObj);
