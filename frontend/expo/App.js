@@ -29,6 +29,7 @@ export default class App extends React.Component {
         this.state = {
             waiting: false,
             validated: false,
+            initCheck: false,
             checkFinished: false,
             socket: io('10.2.109.94', 3000)
         };
@@ -68,10 +69,11 @@ export default class App extends React.Component {
                 );
                 if (result.success) {
                     this.setState({
-                        validated: true
+                        validated: true,
+                        initCheck: true
                     })
                     this.state.socket.emit('login_status', true);
-                    checkTimer = setTimeout(() => this.setState({validated: true, checkFinished: true}), 5000);
+                    checkTimer = setTimeout(() => this.setState({initCheck: false, checkFinished: true}), 4000);
                 } else {
                     AlertIOS.alert('Could not validate fingerprint');
                 }
@@ -79,9 +81,11 @@ export default class App extends React.Component {
         }
         authFunction();
     }
-    renderIf(condition, content) {
-        if (condition) {
-            return content;
+    renderIf(condition1, condition2, content1, content2) {
+        if (condition1) {
+            return content1;
+        } else if (condition2) {
+            return content2;
         } else {
             return null;
         }
@@ -94,15 +98,13 @@ export default class App extends React.Component {
                 styles.center,
                 {backgroundColor: this.state.validated ? 'white' : '#ff4d4d'}
             ]}>
-            {this.renderIf(this.state.validated,
+            {this.renderIf(this.state.initCheck, this.state.checkFinished,
                 <View style={styles.center}>
                 <Image
                     style={{width: 250, height: 250}}
                     source={require('./assets/checkFinal.gif')}
                 />
-                </View>
-            )}
-            {this.renderIf(this.state.checkFinished,
+                </View>,
                 <View style={styles.center}>
                 <Image
                     style={{width: 250, height: 250}}
