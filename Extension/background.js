@@ -17,11 +17,9 @@ chrome.tabs.onUpdated.addListener(function(tabId, change, tab){
     // in local chrome storage
     var token;
     socket.on('registration', function(id){
-      token = id
+      token = id;
     })
-
-    //TODO: temporary, will not need after mongo is implemented
-    var token = 33454;
+    
     // Get url for the tab
     chrome.tabs.get(tabId, function(tab){
       website = tab.url;
