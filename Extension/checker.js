@@ -16,17 +16,15 @@ var password = "Horizonites"
 function checker(callback) {
   var isLoginForm = $('input[type=email]').length;
   if(isLoginForm){
-    var parentForm = $('input[type=password]').closest('form')[0];
-    $('input[type=password]').val(password);
-    $('input[type=email]').val(username)
-    parentForm.submit()
+    login()
   }
 }
 
 
 
 function login(msg) {
-  var parentForm = $(':password').closest('form');
-  $(':password').val(msg.password);
-  $(':password').siblings('input').val(msg.username)[0];
+  var parentForm = $('input[type=password]').closest('form')[0];
+  $('input[type=password]').val(password);
+  $('input[type=email]').val(username)
+  parentForm.submit()
 }

@@ -69,11 +69,12 @@ io.on('connection', function(socket){
         user.websites.forEach(function(websiteObj){
           // console.log('websiteObj website', websiteObj.website, 'req.website', req.website);
           if(websiteObj.website === req.website){
-            console.log('/// emitting mobile request', socketMap);
+            //console.log('/// emitting mobile request', socketMap);
             if(socketMap[req.token.token] && socketMap[req.token.token][1]) {
               var t2 = socketMap[req.token.token][1];
               var phoneData = websiteObj.toObject();
               phoneData.token = req.token.token;
+
               t2.emit('login_request_mobile', phoneData);
             }
           } else {
@@ -88,11 +89,12 @@ io.on('connection', function(socket){
   socket.on('login_request_t2', function(response){
     // if authorizing is false, emit a request_denied_t2 event to t2
     // emit 'login' to t1 socket with login and password data retrieved from mongo
-    console.log('got to login request t2!!!!');
+
     if(response.mobile_response){
       console.log('emitting login approved t2', response);
       var t1 = socketMap[response.token][0];
-      t1.emit('login_approved_t2', response.websiteObj);
+      console.log('GOT HERE, RIGHT?', response);
+      t1.emit('login_approved_t2', response);
     } else {
       console.log('Error, fingerprint login error');
     }

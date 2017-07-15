@@ -2,19 +2,18 @@ var socket = io('http://localhost:3000');
 // Get the user token or register a new one
 var token;
 chrome.storage.sync.get('token', function(tok) {
-  console.log('token',tok);
+  console.log('HERE HER EHERE ');
   if(!tok.token) {
     console.log('registering new user');
     socket.emit('register_t1')
   } else {
     token = tok
-    socket.emit('identify', {token: name: 't1'})
+    socket.emit('identify', {token: token, name: 't1'})
   }
 })
 
 
 socket.on('registration', function(obj){
-  socket.emit('identify', {token: name: 't1'})
   chrome.storage.sync.set({token: obj.id})
   console.log(obj.id);
 })
@@ -27,6 +26,7 @@ chrome.tabs.onUpdated.addListener(function(tabId, change, tab){
       website = tab.url;
       console.log(website);
       // Check if we need to register this website to the user
+      socket.emit('identify', {token: '5969debd071d8f0897923dbd', name: 't1'})
       socket.emit('check_new_website', {url: website})
       socket.on('is_new_website', function(obj) {
         console.log('checking website', 'response', obj);
