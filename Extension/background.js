@@ -1,11 +1,13 @@
 var socket = io('http://localhost:3000');
 // Get the user token or register a new one
 var token;
-chrome.storage.sync.get('token', function(token) {
-  if(!token) {
+chrome.storage.sync.get('token', function(tok) {
+  console.log('token',tok);
+  if(!tok) {
+    console.log('registering new user');
     socket.emit('register_t1')
   } else {
-    token = token
+    token = tok
   }
 })
 socket.on('registration', function(obj){
