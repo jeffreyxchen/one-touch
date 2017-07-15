@@ -10,6 +10,7 @@ import {
     NativeModules,
     Image
 } from 'react-native';
+import Swiper from 'react-native-swiper';
 
 const io = require('socket.io-client');
 
