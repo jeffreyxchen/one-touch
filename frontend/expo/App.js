@@ -12,26 +12,37 @@ import {
 } from 'react-native';
 import Expo from 'expo';
 
-function Button(props) {
-    return (
-        <TouchableOpacity
-        onPress={props.onPress}
-        style={[styles.button, props.style]}>
-        <Text style={styles.buttonText}>{props.children}</Text>
-        </TouchableOpacity>
-    );
-}
+// function Button(props) {
+//     return (
+//         <TouchableOpacity
+//         onPress={props.onPress}
+//         style={[styles.button, props.style]}>
+//         <Text style={styles.buttonText}>{props.children}</Text>
+//         </TouchableOpacity>
+//     );
+// }
 
 export default class App extends React.Component {
-    state = {
-        waiting: false,
-        validated: false
-    };
+    constructor(props) {
+        super(props);
+        this.state = {
+            waiting: false,
+            validated: false,
+            socket: io('10.2.109.94:3000')
+        };
+    }
     componentDidMount() {
+        this.state.socket.on('connect', () => {
+            console.log('Connected!');
+        })
+        this.state.socket.on('errorMessage', (message) => {
+            console.log(message);
+        })
+        this.state.socket.on('login_request', () => {
+            console.log('Login request received');
+        })
+
         let authFunction;
-
-        setInterval()
-
         if (Platform.OS === 'android') {
             authFunction = async () => {
                 this.setState({ waiting: true });
@@ -55,6 +66,7 @@ export default class App extends React.Component {
                     this.setState({
                         validated: true
                     })
+                    socket.emit('login_status', true);
                 } else {
                     AlertIOS.alert('Could not validate fingerprint');
                 }
@@ -87,7 +99,6 @@ export default class App extends React.Component {
             ]}>
             {this.renderIf(this.state.validated,
                 <View style={styles.center}>
-                <Text>This should be above the image</Text>
                 <Image
                     style={{width: 250, height: 250}}
                     source={require('./assets/check1.gif')}
