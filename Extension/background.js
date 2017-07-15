@@ -23,13 +23,16 @@ chrome.tabs.onUpdated.addListener(function(tabId, change, tab){
       // Check if we need to register this website to the user
       socket.emit('check_new_website', {url: website})
       socket.on('is_new_website', function(obj) {
+        console.log('checking website', 'response', obj);
         if(obj.msg) {
           chrome.tabs.sendMessage(tabId, {newSite: true});
         } else {
           // Send the request to the backend to login to the site
           socket.emit('login_request_t1', {token: token, website: website})
+          console.log('requested login', ' awaiting t2');
           // Wait for backend approval to unlock and continue login process
           socket.on('login_approved_t2', function(credentials) {
+            console.log('received response t2', credentials);
             chrome.tabs.sendMessage(tabId, {verified: true, username: credentials.username, password: credentials.password});
           })
         }

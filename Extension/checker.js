@@ -1,7 +1,7 @@
 // Injected into every page
 // Listen for messages from the background
 chrome.runtime.onMessage.addListener(function(msg, sender, sendResponse){
-  // If theres contents in the msg, then continue is good to go
+  // If tmsg is verified, then continue and login
   if(msg.verified) {
     login(msg)
     // Otherwise make a request to login
