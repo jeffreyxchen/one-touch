@@ -15,7 +15,7 @@ chrome.tabs.onUpdated.addListener(function(tabId, change, tab){
     // Once new user info is stored in mongo, receive the event to register
     // the user by storing the ._id of their mongo object as their token
     // in local chrome storage
-    var token;
+    var token = null;
     socket.on('registration', function(id){
       token = id;
     })

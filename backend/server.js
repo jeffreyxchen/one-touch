@@ -9,17 +9,16 @@ var socketMap = {}; /* token: {'t1': t1, 't2': t2, authorizing: false, timeoutId
 mongoose.connect("mongodb://onetouch:wedeservetowin@ds135519.mlab.com:35519/one-touch", function() {console.log('connected to mongo');});
 
 io.on('connection', function(socket){
-  console.log("New socket connected!", socket.id);
   // Catch identity emission and store in var socketMap
   socket.on('register_t1', function(){
     registerUser(socket);
   })
 
-  // emit login_request with token and website object
-  // they check for fingerprint and send back
-
+  // the user sends in a login request from the web, including a
+  // token and a website.
+  // then, we validate and
   socket.on('login_request_t1', function(req){
-    console.log(req);
+    console.log('req', req);
     User.findById(req.token, function(err, user){
       if(!user){
         // The user doesn't exist, register them!
@@ -60,7 +59,6 @@ io.on('connection', function(socket){
         // TODO: update socketMap
         // TODO: still need to find t2 and time
         socketMap[user._id] = {t1: socket.id, authorizing: false};
-        console.log('emitting registration with', user._id);
         socket.emit('registration', user._id);
       }
     })
