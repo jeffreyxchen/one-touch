@@ -25,7 +25,7 @@ const io = require('socket.io-client');
 //     );
 // }
 
-class LoginScreen extends React.Component {
+export default class App extends React.Component {
     static navigationOptions = {
         title: 'Login'
     };
@@ -86,7 +86,14 @@ class LoginScreen extends React.Component {
         }
         authFunction();
     }
-    renderIf(condition1, condition2, content1, content2) {
+    renderIf1(condition, content1, content2) {
+        if (condition) {
+            return content1;
+        } else {
+            return content2;
+        }
+    }
+    renderIf2(condition1, condition2, content1, content2) {
         if (condition1) {
             return content1;
         } else if (condition2) {
@@ -95,29 +102,59 @@ class LoginScreen extends React.Component {
             return null;
         }
     }
+    showMenu() {
+        alert('This is the menu');
+        // return(
+        //     <View>
+        //         <Text>This is the menu</Text>
+        //     </View>
+        // )
+    }
     render() {
         console.log('rendering');
         return (
-            <View style={[
-                {flex: 1},
-                styles.center,
-                {backgroundColor: this.state.validated ? 'white' : '#ff4d4d'}
-            ]}>
-            {this.renderIf(this.state.initCheck, this.state.checkFinished,
-                <View style={styles.center}>
-                <Image
+            this.renderIf1(this.state.validated,
+                <View style={[
+                    {flex: 1},
+                    styles.center,
+                    {backgroundColor: 'white'}
+                ]}>
+                <TouchableOpacity onPress={() => this.showMenu()}>
+                {this.renderIf2(this.state.initCheck, this.state.checkFinished,
+                    <View style={styles.center}>
+                    <Image
                     style={{width: 250, height: 250}}
                     source={require('./assets/checkFinal.gif')}
-                />
-                </View>,
-                <View style={styles.center}>
-                <Image
+                    />
+                    </View>,
+                    <View style={styles.center}>
+                    <Image
                     style={{width: 250, height: 250}}
                     source={require('./assets/checkStatic.jpg')}
+                    />
+                    </View>
+                )}
+                </TouchableOpacity>
+                </View>,
+
+                <View style={[
+                    {flex: 1},
+                    styles.center,
+                    {backgroundColor: 'white'}
+                ]}>
+                <Image
+                style={{width: 100, height: 100}}
+                source={require('./assets/fingerprint.png')}
+                />
+                <Image style={{
+                    marginTop: 10,
+                    height: 45,
+                    resizeMode: 'contain'
+                }}
+                source={require('./assets/logo.png')}
                 />
                 </View>
-            )}
-            </View>
+            )
         )
     }
 }
@@ -127,24 +164,6 @@ class LoginScreen extends React.Component {
 //     ? 'Waiting for fingerprint... '
 //     : 'Authenticate with fingerprint'}
 //     </Button>
-
-class DirectoryScreen extends React.Component {
-    static navigationOptions = {
-        title: 'Directory'
-    };
-    constructor(props) {
-        super(props);
-    }
-}
-
-export default StackNavigator({
-    Login: {
-        screen: LoginScreen
-    },
-    Directory: {
-        screen: DirectoryScreen
-    }
-}, {initialRouteName: 'Login'});
 
 const styles = StyleSheet.create({
     image: {
