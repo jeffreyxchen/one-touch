@@ -11,6 +11,7 @@ import {
     Image
 } from 'react-native';
 import Expo from 'expo';
+const io = require('socket.io-client');
 
 // function Button(props) {
 //     return (
@@ -28,11 +29,12 @@ export default class App extends React.Component {
         this.state = {
             waiting: false,
             validated: false,
-            socket: io('10.2.109.94:3000')
+            checkFinished: false,
+            socket: io('10.2.109.94', 3000)
         };
     }
     componentDidMount() {
-        this.state.socket.on('connect', () => {
+        this.state.socket.on('connection', () => {
             console.log('Connected!');
         })
         this.state.socket.on('errorMessage', (message) => {
@@ -41,6 +43,8 @@ export default class App extends React.Component {
         this.state.socket.on('login_request', () => {
             console.log('Login request received');
         })
+
+        const destination = 'Facebook';
 
         let authFunction;
         if (Platform.OS === 'android') {
@@ -60,13 +64,14 @@ export default class App extends React.Component {
         } else if (Platform.OS === 'ios') {
             authFunction = async () => {
                 let result = await NativeModules.ExponentFingerprint.authenticateAsync(
-                    'Use Touch ID to log in!'
+                    'Log in to: ' + destination
                 );
                 if (result.success) {
                     this.setState({
                         validated: true
                     })
-                    socket.emit('login_status', true);
+                    this.state.socket.emit('login_status', true);
+                    checkTimer = setTimeout(() => this.setState({validated: true, checkFinished: true}), 5000);
                 } else {
                     AlertIOS.alert('Could not validate fingerprint');
                 }
@@ -81,15 +86,7 @@ export default class App extends React.Component {
             return null;
         }
     }
-    showCheck() {
-        console.log('showing check');
-        <svg className="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
-        <circle className="checkmark__circle" cx={26} cy={26} r={25} fill="none"/>
-        <path className="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
-        </svg>
-    }
     render() {
-        this.state.validated ? this.showCheck() : console.log("weiners")
         console.log('rendering');
         return (
             <View style={[
@@ -101,8 +98,15 @@ export default class App extends React.Component {
                 <View style={styles.center}>
                 <Image
                     style={{width: 250, height: 250}}
-                    source={require('./assets/check1.gif')}
-                    // source={{uri: 'https://media.giphy.com/media/8GY3UiUjwKwhO/giphy.gif'}}
+                    source={require('./assets/checkFinal.gif')}
+                />
+                </View>
+            )}
+            {this.renderIf(this.state.checkFinished,
+                <View style={styles.center}>
+                <Image
+                    style={{width: 250, height: 250}}
+                    source={require('./assets/checkStatic.jpg')}
                 />
                 </View>
             )}
