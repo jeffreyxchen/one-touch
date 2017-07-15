@@ -3,7 +3,7 @@ var socket = io('http://localhost:3000');
 var token;
 chrome.storage.sync.get('token', function(tok) {
   console.log('token',tok);
-  if(!tok) {
+  if(!tok.token) {
     console.log('registering new user');
     socket.emit('register_t1')
   } else {
@@ -12,7 +12,7 @@ chrome.storage.sync.get('token', function(tok) {
 })
 socket.on('registration', function(obj){
   chrome.storage.sync.set({token: obj.id})
-  console.log(id);
+  console.log(obj.id);
 })
 console.log('token',token);
 
