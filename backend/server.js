@@ -10,11 +10,14 @@ mongoose.connect("mongodb://onetouch:wedeservetowin@ds135519.mlab.com:35519/one-
 
 io.on('connection', function(socket){
   // Catch identity emission and store in var socketMap
+  console.log("inside on connection");
   socket.on('register_t1', function(){
+    console.log("inside socket on register_t1");
     registerUser(socket);
   })
 
   socket.on('check_new_website', (urlObj) => {
+    console.log('inside socket on checknew');
     var url = urlObj.url;
     url = url.slice(0, url.indexOf('.com')+4);
 
@@ -30,12 +33,15 @@ io.on('connection', function(socket){
     // find if logged in
     User.findById(token, function(err, user){
       if(!user){
+        console.log('emitting isnewweb no user');
         socket.emit('is_new_website', {msg: false});
       } else {
         user.websites.forEach(function(websiteObj){
           if(websiteObj.website === url){
+            console.log('emitting isnewweb correct web');
             socket.emit('is_new_website', {msg: true});
           } else {
+            console.log('emitting isnewweb no web');
             socket.emit('is_new_website', {msg: false});
           }
         })
@@ -47,11 +53,13 @@ io.on('connection', function(socket){
   // token and a website.
   // then, we validate and
   socket.on('login_request_t1', function(req){
+    console.log('inside loginreqt1');
     socketMap[req.token] = {t1: socket.id, authorizing: false};
     User.findById(req.token, function(err, user){
       if(err){
         console.log('Error finding user', err);
       } else {
+        console.log('emitting login request mobile');
         socket.emit('login_request_mobile', websiteObj);
       }
     })
@@ -61,6 +69,7 @@ io.on('connection', function(socket){
     // if authorizing is false, emit a request_denied_t2 event to t2
     // emit 'login' to t1 socket with login and password data retrieved from mongo
     if(response.mobile_response){
+      console.log('emitting login approved t2');
       socket.emit('login_approved_t2', response.websiteObj);
     } else {
       console.log('Error, not logging in');
@@ -70,6 +79,7 @@ io.on('connection', function(socket){
 
   socket.on('create_new_website', function(socket){
     //TODO
+    
 
   })
 });
@@ -83,7 +93,7 @@ function registerUser(socket){
     } else {
       // TODO: update socketMap
       // TODO: still need to find t2 and time
-      console.log('inside registerUser', socketMap);
+      console.log('emitting registration inside registerUser', socketMap);
       socket.emit('registration', {id: user._id});
     }
   })
