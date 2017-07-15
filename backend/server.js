@@ -14,7 +14,7 @@ io.on('connection', function(socket){
     registerUser(socket);
   })
 
-  socket.on('check_new_website', urlObj){
+  socket.on('check_new_website', (urlObj) => {
     var url = urlObj.url;
     url = url.slice(0, url.indexOf('.com')+4);
 
@@ -41,13 +41,13 @@ io.on('connection', function(socket){
         })
       }
     });
-  }
+  })
 
   // the user sends in a login request from the web, including a
   // token and a website.
   // then, we validate and
   socket.on('login_request_t1', function(req){
-    socketMap[user._id] = {t1: socket.id, authorizing: false};
+    socketMap[req.token] = {t1: socket.id, authorizing: false};
     User.findById(req.token, function(err, user){
       if(err){
         console.log('Error finding user', err);
@@ -66,14 +66,13 @@ io.on('connection', function(socket){
       console.log('Error, not logging in');
     }
   })
-});
+
 
   socket.on('create_new_website', function(socket){
     //TODO
 
   })
-})
-
+});
 
 function registerUser(socket){
   console.log('in registerUser beginning');
