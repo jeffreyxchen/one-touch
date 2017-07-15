@@ -10,7 +10,9 @@ mongoose.connect("mongodb://onetouch:wedeservetowin@ds135519.mlab.com:35519/one-
 
 io.on('connection', function(socket){
   // Catch identity emission and store in var socketMap
+  console.log('socketMap', socketMap);
   socket.on('register_t1', function(){
+    console.log('in register_t1 on');
     registerUser(socket);
   })
 
@@ -18,20 +20,17 @@ io.on('connection', function(socket){
   // token and a website.
   // then, we validate and
   socket.on('login_request_t1', function(req){
-    console.log('req', req);
     User.findById(req.token, function(err, user){
       if(!user){
         // The user doesn't exist, register them!
         registerUser(socket);
       } else {
-        var token = user._id;
-        var t1 = socket.id;
-        var t2 = socketMap.token.t1;
         user.websites.forEach(function(websiteObj){
           if(websiteObj.website === req.website){
-
+            //TODO: is this right? check later
+            socket.emit('login_request_mobile', websiteObj);
           } else {
-            socket.emit('new_website', {website: req.website})
+            socket.emit('new_website')
           }
         })
       }
@@ -50,20 +49,28 @@ io.on('connection', function(socket){
 //   })
 // });
 
-  function registerUser(socket){
-    var usr = new User();
-    usr.save(function(err, user){
-      if(err){
-        console.log('Error saving new user', err);
-      } else {
-        // TODO: update socketMap
-        // TODO: still need to find t2 and time
-        socketMap[user._id] = {t1: socket.id, authorizing: false};
-        socket.emit('registration', user._id);
-      }
-    })
-  }
+  socket.on('create_new_website', function(socket){
+
+  })
+
 })
+
+
+function registerUser(socket){
+  console.log('in registerUser beginning');
+  var usr = new User();
+  usr.save(function(err, user){
+    if(err){
+      console.log('Error saving new user', err);
+    } else {
+      // TODO: update socketMap
+      // TODO: still need to find t2 and time
+      socketMap[user._id] = {t1: socket.id, authorizing: false};
+      console.log('inside registerUser', socketMap);
+      socket.emit('registration', user._id);
+    }
+  })
+}
 
 server.listen(3000, '0.0.0.0', () => {
   console.log('Server listening on port 3000!');

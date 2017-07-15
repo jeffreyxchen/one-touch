@@ -11,7 +11,13 @@ chrome.tabs.onUpdated.addListener(function(tabId, change, tab){
       if(!token) {
         socket.emit('register_t1')
       } else {
-        token = token
+        token = token.token
+        var website = null;
+        // Get url for the tab
+        chrome.tabs.get(tabId, (tab) => {
+          website = tab.url;
+          socket.emit('login_request_t1', {token: token, website: website});
+        })
       }
     })
     console.log(token);
@@ -24,13 +30,10 @@ chrome.tabs.onUpdated.addListener(function(tabId, change, tab){
       chrome.storage.sync.set({token: id})
       console.log(id);
     })
-    var website = null;
-    // Get url for the tab
-    chrome.tabs.get(tabId, function(tab){
-      website = tab.url;
-    })
+
+
     // Send the request to the backend to login to the site
-    socket.emit('login_request_t1', {token: token, website: website})
+
     // Wait for backend approval to continue login process
     socket.on('login_request_t2', function(obj) {
       chrome.tabs.sendMessage(tabId, {verified: true, username: obj.username, password: obj.password});
