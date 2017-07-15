@@ -60,6 +60,7 @@ io.on('connection', function(socket){
   // token and a website.
   // then, we validate and
   socket.on('login_request_t1', function(req){
+    console.log('HELLO ');
     //console.log('inside loginreqt1', 'req.website', socketMap);
     // socketMap[req.token.token] = {t1: socket, authorizing: false};
     User.findById(req.token.token, function(err, user){
@@ -67,9 +68,11 @@ io.on('connection', function(socket){
         console.log('Error finding user');
       } else {
         user.websites.forEach(function(websiteObj){
-          // console.log('websiteObj website', websiteObj.website, 'req.website', req.website);
-          if(websiteObj.website === req.website){
-            //console.log('/// emitting mobile request', socketMap);
+          var url = req.website;
+          url = url.slice(0, url.indexOf('.com')+5);
+          console.log('websiteObj website', websiteObj.website, 'req.website', url);
+          if(websiteObj.website === url){
+            console.log('/// emitting mobile request', socketMap);
             if(socketMap[req.token.token] && socketMap[req.token.token][1]) {
               var t2 = socketMap[req.token.token][1];
               var phoneData = websiteObj.toObject();
