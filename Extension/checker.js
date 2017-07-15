@@ -2,31 +2,25 @@
 // Listen for messages from the background
 chrome.runtime.onMessage.addListener(function(msg, sender, sendResponse){
   // If theres contents in the msg, then continue is good to go
-  if(msg) {
+  if(msg.verified) {
     login(msg)
     // Otherwise make a request to login
   } else {
-    checker(function(message){
-      sendResponse()
-    })
+    checker(sendResponse())
   }
 })
 
 function checker(callback) {
-  var isLogin = $(':password').length;
-  if(isLogin){
-    $(':password').val('');
-    var parentForm = $(':password').closest('form');
-    parentForm.submit(function(e){
-      e.preventDefault();
-      callback(oneTouch())
-    })
+  var isLoginForm = $(':password').length;
+  if(isLoginForm){
+    console.log('over here');
+    var parentForm = $(':password').closest('form')[0];
+    console.log(parentForm);
+    // setTimeout(function(){parentForm.submit()}, 1000)
   }
 }
 
-function oneTouch() {
-  return "called one touch";
-}
+
 
 function login(msg) {
   var parentForm = $(':password').closest('form');

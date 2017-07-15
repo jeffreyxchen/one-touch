@@ -22,7 +22,7 @@
   "content_scripts": [
     {
       "matches": ["http://*/*", "https://*/*"],
-      "js": ["jquery.min.js", "checker.js"]
+      "js": ["jquery.min.js", "checker.js", "newsite.js"]
     }
   ],
   "content_security_policy": "default-src 'none'; script-src 'self'; object-src 'self'; connect-src *"
