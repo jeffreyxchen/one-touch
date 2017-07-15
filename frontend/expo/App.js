@@ -10,6 +10,8 @@ import {
     NativeModules,
     Image
 } from 'react-native';
+import { StackNavigator } from 'react-navigation';
+
 import Expo from 'expo';
 const io = require('socket.io-client');
 
@@ -23,7 +25,10 @@ const io = require('socket.io-client');
 //     );
 // }
 
-export default class App extends React.Component {
+class LoginScreen extends React.Component {
+    static navigationOptions = {
+        title: 'Login'
+    };
     constructor(props) {
         super(props);
         this.state = {
@@ -122,6 +127,24 @@ export default class App extends React.Component {
 //     ? 'Waiting for fingerprint... '
 //     : 'Authenticate with fingerprint'}
 //     </Button>
+
+class DirectoryScreen extends React.Component {
+    static navigationOptions = {
+        title: 'Directory'
+    };
+    constructor(props) {
+        super(props);
+    }
+}
+
+export default StackNavigator({
+    Login: {
+        screen: LoginScreen
+    },
+    Directory: {
+        screen: DirectoryScreen
+    }
+}, {initialRouteName: 'Login'});
 
 const styles = StyleSheet.create({
     image: {
