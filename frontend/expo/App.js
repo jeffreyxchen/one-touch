@@ -69,6 +69,7 @@ export default class App extends React.Component {
         //     };
         // }
         // authFunction();
+        this.state.socket.emit('indentify', {name: 't2'})
         this.state.socket.on('connection', () => {
             console.log('Connected!');
         })

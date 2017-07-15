@@ -8,8 +8,10 @@ chrome.storage.sync.get('token', function(tok) {
     socket.emit('register_t1')
   } else {
     token = tok
+    socket.emit('identify', {token: token, name: 't1'});
   }
 })
+
 socket.on('registration', function(obj){
   chrome.storage.sync.set({token: obj.id})
   console.log(obj.id);
