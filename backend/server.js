@@ -10,33 +10,31 @@ mongoose.connect("mongodb://onetouch:wedeservetowin@ds135519.mlab.com:35519/one-
 
 io.on('connection', function(socket){
   socket.on('identify', (obj) => {
+    console.log('IDENTIFYING');
     if(!socketMap[obj.token]) {
-      socketMap[obj.token] = {}
+      socketMap[obj.token] = [null, null]
     }
-    if(obj.name === 't1'){
-      socketMap[obj.token].t1 = socket;
-    } else {
-      socketMap[obj.token].t2 = socket;
+    if(obj.name === 't1' && !socketMap[obj.token][0]){
+      socketMap[obj.token][0] = socket
+    } else if(!socketMap[obj.token][1]){
+      socketMap[obj.token][1] = socket
     }
+    console.log('socketMap at end of id', socketMap);
   })
   // Catch identity emission and store in var socketMap
-  console.log("inside on connection");
   socket.on('register_t1', function(){
-    console.log("inside socket on register_t1");
     registerUser(socket);
   })
 
   socket.on('check_new_website', (urlObj) => {
-    console.log('inside socket on checknew');
     var url = urlObj.url;
     url = url.slice(0, url.indexOf('.com')+5);
-    console.log('url', url);
 
     // find user
     var t1 = socket;
     var token = null;
     Object.keys(socketMap).forEach(function(key){
-      if(socketMap[key].t1.id === t1.id){
+      if(socketMap[key][0] === t1){
         token = key;
       }
     })
@@ -45,7 +43,6 @@ io.on('connection', function(socket){
     User.findById(token, function(err, user){
       console.log(token, user);
       if(!user){
-        console.log('emitting isnewweb no user');
         socket.emit('is_new_website', {msg: false});
       } else {
         user.websites.forEach(function(websiteObj){
@@ -64,7 +61,7 @@ io.on('connection', function(socket){
   // then, we validate and
   socket.on('login_request_t1', function(req){
     //console.log('inside loginreqt1', 'req.website', socketMap);
-    socketMap[req.token.token] = {t1: socket, authorizing: false};
+    // socketMap[req.token.token] = {t1: socket, authorizing: false};
     User.findById(req.token.token, function(err, user){
       if(!user){
         console.log('Error finding user');
@@ -73,9 +70,12 @@ io.on('connection', function(socket){
           // console.log('websiteObj website', websiteObj.website, 'req.website', req.website);
           if(websiteObj.website === req.website){
             console.log('/// emitting mobile request', socketMap);
-            var t2 = socketMap[req.token.token].t2;
-            var phoneData = Object.assign(websiteObj, {token: req.token.token});
-            t2.emit('login_request_mobile', phoneData);
+            if(socketMap[req.token.token] && socketMap[req.token.token][1]) {
+              var t2 = socketMap[req.token.token][1];
+              var phoneData = websiteObj.toObject();
+              phoneData.token = req.token.token;
+              t2.emit('login_request_mobile', phoneData);
+            }
           } else {
             console.log('website obj not found');
           }
@@ -90,8 +90,8 @@ io.on('connection', function(socket){
     // emit 'login' to t1 socket with login and password data retrieved from mongo
     console.log('got to login request t2!!!!');
     if(response.mobile_response){
-      console.log('emitting login approved t2');
-      var t1 = socketMap[response.token].t1;
+      console.log('emitting login approved t2', response);
+      var t1 = socketMap[response.token][0];
       t1.emit('login_approved_t2', response.websiteObj);
     } else {
       console.log('Error, fingerprint login error');
