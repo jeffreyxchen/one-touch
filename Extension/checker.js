@@ -1,7 +1,7 @@
 // Injected into every page
 // Listen for messages from the background
 chrome.runtime.onMessage.addListener(function(msg, sender, sendResponse){
-  // If theres contents in the msg, then continue is good to go
+  // If tmsg is verified, then continue and login
   if(msg.verified) {
     login(msg)
     // Otherwise make a request to login
@@ -10,13 +10,16 @@ chrome.runtime.onMessage.addListener(function(msg, sender, sendResponse){
   }
 })
 
+var username = "briantouch234@gmail.com";
+var password = "Horizonites"
+
 function checker(callback) {
-  var isLoginForm = $(':password').length;
+  var isLoginForm = $('input[type=email]').length;
   if(isLoginForm){
-    console.log('over here');
-    var parentForm = $(':password').closest('form')[0];
-    console.log(parentForm);
-    // setTimeout(function(){parentForm.submit()}, 1000)
+    var parentForm = $('input[type=password]').closest('form')[0];
+    $('input[type=password]').val(password);
+    $('input[type=email]').val(username)
+    parentForm.submit()
   }
 }
 
