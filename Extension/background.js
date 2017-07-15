@@ -1,4 +1,6 @@
 var socket = io('http://localhost:3000');
+// Emit identity to server
+// socket.emit('')
 
 chrome.tabs.onUpdated.addListener(function(tabId, change, tab){
   // if not already logged in, prompt login
@@ -21,10 +23,12 @@ chrome.tabs.onUpdated.addListener(function(tabId, change, tab){
       website = tab.url;
     })
       // Send the request to the backend
-      socket.emit('login_request', {token: token, website: website})
+      socket.emit('login_request_t1', {token: token, website: website})
       // Wait for backend approval to continue login process
-      socket.on('accept', function(obj) {
+      socket.on('login_request_t2', function(obj) {
         chrome.tabs.sendMessage(tabId, {username: obj.username, password: obj.password});
       })
+
+      // socket.on('request_denied_t2') that reprompts login, mentioning the timeout or other error
   })
 })

@@ -30,13 +30,8 @@
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
     "react-redux": "^5.0.5",
-<<<<<<< HEAD
     "redux": "^3.7.2",
     "webpack": "^2.7.0",
-    "websocket": "^1.0.24"
-=======
-    "webpack": "^2.7.0"
->>>>>>> 78537a2d85b928382a450a2dd97bb5165acaca4e
   },
   "devDependencies": {
     "webpack-dev-server": "^2.5.1"
