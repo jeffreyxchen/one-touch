@@ -7,8 +7,14 @@ chrome.tabs.onUpdated.addListener(function(tabId, change, tab){
     var website = null;
     // TODO: if token does not exist, prompt registration and create new token
     // TODO: create new token by prompting for a phone number.
-    // TODO: store the gmail/password/phone number object in mongo, store the ._id using StorageArea.set({token: ._id})
-    var token = 1;
+    // TODO: store the gmail/password/phone number object in mongo, store the ._id using chrome.storage.sync.set
+    /*
+    chrome.storage.sync.set({'token': theValue}, function() {
+      // Notify that we saved.
+      message('Settings saved');
+    });
+    */
+    var token = 33454;
 
     // Get current url *async*
     chrome.tabs.get(tabId, function(tab){
