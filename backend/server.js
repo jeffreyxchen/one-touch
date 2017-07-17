@@ -60,7 +60,6 @@ io.on('connection', function(socket){
   // token and a website.
   // then, we validate and
   socket.on('login_request_t1', function(req){
-    console.log('HELLO ');
     //console.log('inside loginreqt1', 'req.website', socketMap);
     // socketMap[req.token.token] = {t1: socket, authorizing: false};
     User.findById(req.token.token, function(err, user){

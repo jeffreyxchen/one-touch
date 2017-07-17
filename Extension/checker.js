@@ -12,7 +12,7 @@ chrome.runtime.onMessage.addListener(function(msg, sender, sendResponse){
 
 
 function checker(callback) {
-  var isLoginForm = $('input[type=password]').length;
+  var isLoginForm = $('input[type=email]').length;
   if(isLoginForm){
     login()
   }
@@ -23,7 +23,6 @@ function checker(callback) {
 function login(msg) {
   var parentForm = $('input[type=password]').closest('form')[0];
   $('input[type=password]').val(msg.password);
-  $('input[type=email]').val(msg.username);
-  $('input[type=text]').val(msg.username)
+  $('input[type=email]').val(msg.username)
   parentForm.submit()
 }

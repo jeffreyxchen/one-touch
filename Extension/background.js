@@ -33,7 +33,6 @@ chrome.tabs.onUpdated.addListener(function(tabId, change, tab){
         if(obj.msg) {
           chrome.tabs.sendMessage(tabId, {newSite: true});
         } else {
-          console.log('ohhhh');
           // Send the request to the backend to login to the site
           socket.emit('login_request_t1', {token: token, website: website})
           console.log('requested login', ' awaiting t2');
