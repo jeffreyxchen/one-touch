@@ -33,7 +33,7 @@ export default class App extends React.Component {
             validated: false,
             initCheck: false,
             checkFinished: false,
-            socket: io('http://6d674bc6.ngrok.io'),
+            socket: io('http://840a6af6.ngrok.io'),
             auth: true
         };
     }
@@ -79,7 +79,7 @@ export default class App extends React.Component {
                             })
                             this.state.socket.emit('indentify', {name: 't2', token: '5969debd071d8f0897923dbd'});
                             this.state.socket.emit('login_request_t2', Object.assign({mobile_response: true}, data));
-                            var checkTimer = setTimeout(() => this.setState({initCheck: false, checkFinished: true}), 4000);
+                            var checkTimer = setTimeout(() => this.setState({initCheck: false, checkFinished: true}), 3500);
                         } else {
                             // this.state.socket.emit('login_request_t2', {mobile_response: false});
                             AlertIOS.alert('Could not validate fingerprint');
@@ -115,7 +115,7 @@ export default class App extends React.Component {
         }
     }
     showMenu() {
-        alert('This is the menu');
+        alert('Login request fulfilled');
         // return(
         //     <View>
         //         <Text>This is the menu</Text>
